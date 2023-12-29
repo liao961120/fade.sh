@@ -8,9 +8,11 @@
 # https://stackoverflow.com/a/12723330 (floating point arithmetic in Bash)
 # https://stackoverflow.com/a/2664746 (remove parents and extension from file paths)
 
-cwd=`pwd`
-source ~/.bash_profile
-cd $cwd
+if [[ "$OSTYPE" == "msys" ]]; then
+    cwd=`pwd`
+    source ~/.bash_profile
+    cd $cwd
+fi
 [[ -d faded ]] || mkdir faded
 
 FADE_OUT_DUR=3.5
@@ -22,5 +24,4 @@ for fp in raw/*wav; do
     outfp=faded/${outfp%.*}".mp3"
 
     ffmpeg -i $fp -vn -ar 44100 -b:a 320k -vf fade=in:0:d=$FADE_IN_DUR,fade=out:st=$foS:d=$FADE_OUT_DUR -af afade=in:0:d=$FADE_IN_DUR,afade=out:st=$foS:d=$FADE_OUT_DUR $outfp
-
 done
